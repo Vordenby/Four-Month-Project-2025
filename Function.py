@@ -27,11 +27,7 @@ class Function():
         if self.function != '0':
             from math import sin, cos, exp, pow, sqrt, tan
 
-            temp = ''
-
-            while (self.function).count('x') > 0:
-                self.function = (self.function).replace('x', str(self.x), 1)
-            self.y = float(temp)
+            self.y = ((sin((self.x**2) + (self.x**-1) + (self.x**1/3))) / tan(exp(cos(sqrt(self.x))))) * (10**-6)
         
         else:
             temp = 0.0
