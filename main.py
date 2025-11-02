@@ -18,4 +18,4 @@ res = []
 for i in range(-N, N, delay):
     Func = Function(temporary_choosing, float(i))
     
-    Func.CalculateFunc()
+    res.append(Func.CalculateFunc())
