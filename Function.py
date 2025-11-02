@@ -26,13 +26,18 @@ class Function():
 
         if self.function != '0':
             from math import sin, cos, exp, pow, sqrt, tan
-            self.y = float((self.function).replace('x', str(x), 1))
+
+            temp = ''
+
+            while (self.function).count('x') > 0:
+                self.function = (self.function).replace('x', str(self.x), 1)
+            self.y = float(temp)
         
         else:
             temp = 0.0
             for i in range(int(x)):
                 
-                temp += cos(x*i)/i
+                temp += cos(self.x*i)/i
 
         self.result = [self.x, self.y]
         return self.result
