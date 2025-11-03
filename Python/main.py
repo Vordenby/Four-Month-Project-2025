@@ -14,7 +14,9 @@ delay = float(input("Запишите шаг для x"))
 
 res = []
 
-for i in numpy.arange(-N, N, delay):
+from numpy import arange
+
+for i in arange(-N, N, delay):
     Func = Function(temporary_choosing, float(i))
     
     res.append(Func.CalculateFunc())
