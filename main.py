@@ -1,6 +1,7 @@
 from Function import Function #Импортируем класс
+from Table import Table
 
-import math
+from numpy import arrange
 
 temporary_choosing = 0
 
@@ -15,7 +16,10 @@ delay = float(input("Запишите шаг для x"))
 
 res = []
 
-for i in range(-N, N, delay):
+for i in arrange(-N, N, delay):
     Func = Function(temporary_choosing, float(i))
     
     res.append(Func.CalculateFunc())
+
+table = Table(res)
+table.CreateTable()
