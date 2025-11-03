@@ -25,13 +25,13 @@ class Function():
     def CalculateFunc(self):
 
         if self.function != '0':
-            from math import sin, cos, exp, pow, sqrt, tan
+            from math import sin, cos, exp, sqrt, tan
 
             self.y = ((sin((self.x**2) + (self.x**-1) + (self.x**1/3))) / tan(exp(cos(sqrt(self.x))))) * (10**-6)
         
         else:
             temp = 0.0
-            for i in range(int(x)):
+            for i in range(int(self.x)):
                 
                 temp += cos(self.x*i)/i
 

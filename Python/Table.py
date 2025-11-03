@@ -24,6 +24,7 @@ class Table():
             Yes.append(i[1])
 
         import pandas as pd
+        from random import randint
 
         Data_Frame = pd.DataFrame(
             {
@@ -32,4 +33,4 @@ class Table():
             }
         )
 
-        Data_Frame.to_csv("Function_" + str(random.randint(1, 20000)))
+        Data_Frame.to_csv("Function_" + str(randint(1, 20000)))
