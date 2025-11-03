@@ -34,7 +34,7 @@ class Function():
             
                 if cos(sqrt(x)) == 0:
                     raise ValueError("Аргумент не должен быть равным Pi/2 + n*Pi!")
-                self.function = ((sin((x**2)+(x**-1)+(x**1/3)))/tan(exp(cos(sqrt(x)))))*pow(10, -6)
+                self.y = ((sin((x**2)+(x**-1)+(x**1/3)))/tan(exp(cos(sqrt(x)))))*pow(10, -6)
 
             try:
                 return(funcFirst(self.x))
@@ -47,6 +47,7 @@ class Function():
                 if i == 0:
                     temp += cos(self.x*i)
                 else: temp += cos(self.x*i)/i
+            self.y = temp
 
         self.result = [self.x, self.y]
         return self.result

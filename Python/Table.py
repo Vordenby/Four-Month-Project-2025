@@ -1,7 +1,11 @@
 class Table():
 
     def __init__(self, data):
+
+        from random import randint
+
         self.data = data
+        self.name = "Function_"+str(randint(1, 10000))
 
     
     def CreateTable(self):
@@ -33,5 +37,19 @@ class Table():
                 "y": [y for y in Yes]
             }
         )
+        Data_Frame.to_excel(self.name + ".xslx")
+    
+    def Create_Plot(self):
 
-        Data_Frame.to_csv("Function_" + str(randint(1, 20000)))
+        Width, Height = map(float, input("Введите масштабы графика(Ширина Высота (чз пробел) )\n> ").split())
+
+        import pandas as pd
+
+        OP_DATA = pd.read_excel(self.name+".xslx")
+
+        OP_DATA.plot(
+            x='x',
+            y='y',
+            figsize=(Width, Height),
+            title="График функции"
+        )
