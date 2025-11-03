@@ -17,7 +17,8 @@ class Table():
         
         path = GetPath()
 
-        Xes = [], Yes = []
+        Xes = []
+        Yes = []
 
         for i in self.data:
             Xes.append(i[0])

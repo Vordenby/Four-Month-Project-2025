@@ -6,11 +6,11 @@ class Function():
         self.x = x
         self.y = 0
 
-        from math import sin, cos, exp, pow, sqrt, tan
+        from math import sin, cos, exp, pow, sqrt, tan, pi
 
 
         if function == 1:
-            self.function = ((sin((x**2)+(x**-1)+(x**1/3)))/tan(exp(cos(sqrt(x)))))*pow(10, -6)
+            self.function = 1
 
         elif function == 2:
             if x < 0:
@@ -23,17 +23,30 @@ class Function():
             self.function = '0'
 
     def CalculateFunc(self):
+        
+        from math import sin, cos, exp, sqrt, tan
 
         if self.function != '0':
-            from math import sin, cos, exp, sqrt, tan
 
-            self.y = ((sin((self.x**2) + (self.x**-1) + (self.x**1/3))) / tan(exp(cos(sqrt(self.x))))) * (10**-6)
-        
+            def funcFirst(x):
+                if x < 0:
+                    raise ValueError("Аргумент не должен быть меньше 0!")
+            
+                if cos(sqrt(x)) == 0:
+                    raise ValueError("Аргумент не должен быть равным Pi/2 + n*Pi!")
+                self.function = ((sin((x**2)+(x**-1)+(x**1/3)))/tan(exp(cos(sqrt(x)))))*pow(10, -6)
+
+            try:
+                return(funcFirst(self.x))
+            except ValueError as Error:
+                print(Error)
+
         else:
             temp = 0.0
-            for i in range(int(self.x)):
-                
-                temp += cos(self.x*i)/i
+            for i in range (int(self.x)):
+                if i == 0:
+                    temp += cos(self.x*i)
+                else: temp += cos(self.x*i)/i
 
         self.result = [self.x, self.y]
         return self.result
