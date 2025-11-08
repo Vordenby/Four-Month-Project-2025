@@ -5,7 +5,7 @@ class Table():
         from random import randint
 
         self.data = data
-        self.name = "Function_"+str(randint(1, 10000))
+        self.name = "Function_"+str(randint(1, 10000))+".xlsx"
 
     
     def CreateTable(self):
@@ -37,7 +37,8 @@ class Table():
                 "y": [y for y in Yes]
             }
         )
-        Data_Frame.to_excel(self.name + ".xslx")
+        Data_Frame.to_excel(self.name)
+        print("Таблица создана!\nИмя файла: ", self.name)
     
     def Create_Plot(self):
 
@@ -45,7 +46,7 @@ class Table():
 
         import pandas as pd
 
-        OP_DATA = pd.read_excel(self.name+".xslx")
+        OP_DATA = pd.read_excel(self.name)
 
         OP_DATA.plot(
             x='x',
@@ -53,3 +54,4 @@ class Table():
             figsize=(Width, Height),
             title="График функции"
         )
+        print("График для функции создан!")

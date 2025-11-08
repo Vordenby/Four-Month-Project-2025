@@ -17,8 +17,7 @@ res = []
 from numpy import arange
 
 for i in arange(a, b+delay, delay):
-    Func = Function(temporary_choosing, float(i))
-    
+    Func = Function(temporary_choosing, i)
     res.append(Func.CalculateFunc())
 
 table = Table(res)
