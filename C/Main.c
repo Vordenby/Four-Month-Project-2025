@@ -270,7 +270,7 @@ int main(void) {
                         break;
                     
                     case 3:
-                        system("PyPlot.exe");
+                        system("\"PyPlot.exe\"");
                         break;
                     
                     case 4:
