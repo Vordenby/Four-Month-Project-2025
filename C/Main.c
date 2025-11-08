@@ -156,13 +156,13 @@ void Describe_Func(FuncPtr f, double a, double b, double step) {
 
 }
 
-
 //Mass
 
 typedef struct {
     double x;
     double y;
 } Point;
+
 
 void Make_Points(FuncPtr f, double a, double b, double step) {
 
@@ -310,6 +310,7 @@ int main(void) {
                     break;
 
                 case 3:
+                    system("PyPlot.exe");
                     break;
 
                 case 4:
