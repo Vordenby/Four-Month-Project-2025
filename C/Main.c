@@ -263,6 +263,8 @@ FuncPtr Select_Func() {
 
 int main(void) {
 
+    setlocale(LC_ALL, ".UTF-8");
+
     int choise;
 
     while (1) {
