@@ -38,20 +38,37 @@ class Table():
             }
         )
         Data_Frame.to_excel(self.name)
-        print("Таблица создана!\nИмя файла: ", self.name)
+        print(f"Таблица создана!\nИмя файла: {self.name}")
     
     def Create_Plot(self):
-
-        Width, Height = map(float, input("Введите масштабы графика(Ширина Высота (чз пробел) )\n> ").split())
-
-        import pandas as pd
-
-        OP_DATA = pd.read_excel(self.name)
-
-        OP_DATA.plot(
-            x='x',
-            y='y',
-            figsize=(Width, Height),
-            title="График функции"
-        )
-        print("График для функции создан!")
+        Width = None
+        Height = None
+        
+        while Width == None and Height == None:
+            try:
+                Width, Height = map(float, input("Введите масштабы графика(Ширина Высота (чз пробел) )\n> ").split())
+                break
+            except ValueError:
+                print(f"ОШИБКА {ValueError} (Некорректный ввод)\n Пожалуйста, введите два числа через пробел.")
+        
+        try:
+            import pandas as pd
+            import matplotlib.pyplot as plt
+            
+            OP_DATA = pd.read_excel(self.name)
+            
+            plt.figure(figsize=(Width, Height))
+            plt.plot(OP_DATA['x'], OP_DATA['y'], marker='o', linestyle='-', linewidth=1, markersize=3)
+            plt.title("График функции")
+            plt.xlabel("x")
+            plt.ylabel("y")
+            plt.grid(True)
+            
+            plot_filename = self.name.replace('.xlsx', '_plot.png')
+            plt.savefig(plot_filename)
+            plt.close()
+            
+            print(f"График сохранен как: {plot_filename}")
+            
+        except Exception as e:
+            print(f"Ошибка при создании графика: {e}")
