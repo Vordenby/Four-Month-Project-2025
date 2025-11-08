@@ -11,46 +11,40 @@ typedef double (*FuncPtr)(double);
 #define EPS 1e-6 // 10^-6
 
 double f1(double x) {
-
+    if (fabs(x) < EPS) return 0.0;
+    
     return (sin(x*x + pow(x, -1) + cbrt(x)) * EPS)/tan((exp(cos(sqrt(fabs(x))))));
-
 }
 
 double f2(double x) {
-
     if (x > 3.61) {
         return exp(-(x+0.8)); 
-        } else if (x >= 0) {
-            return 1;
-            } else {
-                return 0.5*x;
-                }
-
+    } else if (x >= 0) {
+        return 1;
+    } else {
+        return 0.5*x;
+    }
 }
 
 double f3(double x) {
-
     double sum = 0;
 
     for (int i = 1; i <= 10; i++ ) {
-        sum+= cos(i*x)/i;
+        sum += cos(i*x)/i;
     }
 
     return sum;
-
 }
 
 void Print_Table(FuncPtr f, double a, double b, double step) {
-
     printf("\n      x\t\tf(x)\n");
     printf("------------------------\n");
     for (double x = a; x <= b; x += step) {
-        printf("%10.3f\t%14.6e\n");
+        printf("%10.3f\t%14.6e\n", x, f(x));
     }
 }
 
 void Write_To_txt(FuncPtr f, double a, double b, double step) {
-
     FILE *fp = fopen("dat.txt", "w");
 
     if (!fp) {
@@ -59,28 +53,26 @@ void Write_To_txt(FuncPtr f, double a, double b, double step) {
     }
 
     for (double x = a; x <= b; x += step) {
-        fprintf(fp, "%.6f\t%.6e\n");
+        fprintf(fp, "%.6f\t%.6e\n", x, f(x));
     }
     fclose(fp);
     printf("Успешно записано!");
-
 }
 
 void Compute_File(FuncPtr f) {
-
     FILE *fp = fopen("dat.txt", "r");
 
     if (!fp) {
         printf("Файл не найден.");
+        return;
     }
 
     double x, y;
 
-    while (fscanf(fp, "%lf\t%lf", &x, &y) == 1) {
+    while (fscanf(fp, "%lf\t%lf", &x, &y) == 2) {
         printf("f(%.3f) = %.6e\n", x, y);
     }
     fclose(fp);
-
 }
 
 double Golden(FuncPtr f, double a, double b) {
@@ -88,36 +80,32 @@ double Golden(FuncPtr f, double a, double b) {
 
     double c, d;
 
-    while (fabs(b - a) > EPS)
-    {
+    while (fabs(b - a) > EPS) {
         c = b - (b - a) / phi;
         d = a + (b - a) / phi;
 
         if (f(c) < f(d)) {
             a = c;
-            } else {
-                b = d;
-            }
+        } else {
+            b = d;
+        }
     }
     
     return (a + b) / 2;
-
 }
 
 void Describe_Func(FuncPtr f, double a, double b, double step) {
-
     double prev = f(a);
     int increasing = 0, decreasing = 0, ch_sign = 0;
     double prev_sign = (prev > 0) - (prev < 0);
 
-    for (double x = a + step; x <= b; x+=step) {
-
+    for (double x = a + step; x <= b; x += step) {
         double y = f(x);
 
         if (y > prev) { 
             increasing++; 
-            } else {
-                decreasing++;
+        } else if (y < prev) {
+            decreasing++;
         }
         
         double sign = (y > 0) - (y < 0);
@@ -127,45 +115,58 @@ void Describe_Func(FuncPtr f, double a, double b, double step) {
         }
 
         prev = y;
-
         prev_sign = sign;
-
     }
 
     printf("Функция");
 
     if (increasing && !decreasing) {
-        printf("возрастающая.\n");
-        } else if (decreasing && !increasing) {
-            printf("убывающая.\n");
-            } else {
-                printf("не монотонна.\n");
-            }
+        printf(" возрастающая.\n");
+    } else if (decreasing && !increasing) {
+        printf(" убывающая.\n");
+    } else {
+        printf(" не монотонна.\n");
+    }
 
-            if (ch_sign > 0) {
-                printf("Функция знакопеременная.\n");
-                } else {
-                printf("Функция одного знака.\n");
-            }
+    if (ch_sign > 0) {
+        printf("Функция знакопеременная.\n");
+    } else {
+        printf("Функция одного знака.\n");
+    }
 
-            if (fabs(f(-b) - f(b)) < 1e-3) {
+    // Проверка симметрии
+    double mid = (a + b) / 2;
+    double left, right;
+    
+    if (fabs(b - a) > 1e-3) {
+        double test_x = a + (b - a) * 0.25;
+        double sym_x = 2 * mid - test_x;
+        
+        if (sym_x >= a && sym_x <= b) {
+            left = f(test_x);
+            right = f(sym_x);
+            
+            if (fabs(left - right) < 1e-3) {
                 printf("Функция симметрична.\n");
-                } else {
-                    printf("Функция несимметрична.\n");
+            } else {
+                printf("Функция несимметрична.\n");
             }
-
+        } else {
+            printf("Функция несимметрична.\n");
+        }
+    } else {
+        printf("Функция несимметрична.\n");
+    }
 }
 
-//Mass
+// Mass
 
 typedef struct {
     double x;
     double y;
 } Point;
 
-
 void Make_Points(FuncPtr f, double a, double b, double step) {
-
     int n = (int)((b-a) / step) + 1;
 
     Point *arr = malloc(n*sizeof(Point));
@@ -173,35 +174,34 @@ void Make_Points(FuncPtr f, double a, double b, double step) {
     int i = 0;
 
     for (double x = a; x <= b; x += step) {
-
         arr[i].x = x;
         arr[i].y = f(x);
 
         i++;
-        
     }
 
     printf("\nТочки:\n");
     for (int j = 0; j < n; j++) {
-
         printf("(%.3f, %.6e)\n", arr[j].x, arr[j].y);
-
     }
 
     free(arr);
-
 }
 
 void Make_Matrix(FuncPtr f, double a, double b, double step) {
-
     int n = (int)((b-a) / step) + 1;
     double **matrix = malloc(n*sizeof(double *));
+
+    for (int i = 0; i < n; i++) {
+        matrix[i] = malloc(2*sizeof(double));
+    }
 
     double x = a;
 
     for (int i = 0; i < n; i++) {
         matrix[i][0] = x;
         matrix[i][1] = f(x);
+        x += step;
     }
 
     printf("\nМассив аргументов и значений:\n");
@@ -215,31 +215,27 @@ void Make_Matrix(FuncPtr f, double a, double b, double step) {
     }
 
     free(matrix);
-
 }
 
 void Range(FuncPtr f, double a, double b, double step) {
-
     double Min_X = a, Max_X = b;
-    double Min_Y = f(a), Max_Y = f(b);
+    double Min_Y = f(a), Max_Y = f(a);
 
     for (double x = a; x <= b; x += step) {
         double y = f(x);
 
         if (y < Min_Y) {
             Min_Y = y;
-            } else {
-                Max_Y = y;
-            }   
+        } else if (y > Max_Y) {
+            Max_Y = y;
+        }   
     }
     
     printf("Размах по Ox: %.3f\n", fabs(Max_X-Min_X));
     printf("Размах по Oy: %.6e\n", fabs(Max_Y-Min_Y));
-
 }
 
 FuncPtr Select_Func() {
-
     int ch;
 
     printf("\nВыберите функцию:\n");
@@ -247,28 +243,21 @@ FuncPtr Select_Func() {
     printf("1 - f1(x)\n2 - f2(x)\n3 - f3(x)\n> "); scanf("%d", &ch);
 
     switch (ch) {
-
         case 1: return f1;
-
         case 2: return f2;
-
         case 3: return f3;
-
         default: return NULL;
-
     }
 }
 
 //-----------------------------------------------------------------------------
 
 int main(void) {
-
     setlocale(LC_ALL, ".UTF-8");
 
     int choise;
 
     while (1) {
-
         printf("\n====МЕНЮ====\n");
 
         printf("\n1- Вычислить значение\n2 - Табулировать\n3 - Выполнить операцию\n4 - Выход\n> "); scanf("%d", &choise);
@@ -283,9 +272,7 @@ int main(void) {
 
         printf("Введите начало, конец интервала и шаг (чз пробел): ");scanf("%lf %lf %lf", &a, &b, &step);
 
-        switch (choise)
-        {
-        
+        switch (choise) {
             case 1:
                 printf("Введите x:");scanf("%lf", &x);
                 printf("f(x) = %.6e\n", f(x));
@@ -301,43 +288,42 @@ int main(void) {
                 printf("Выберите операцию:\n1 - Запись в файл dat.txt\n2 - Расчет из файла dat.txt\n3 - Построение графика(Python)\n4 - Поиск максимума\n5 - Анализ функции\n6 - Массив точек\n7 - Двумерный массив аргументов и значений\n8 - Размах функции\n> ");
                 scanf("%d", &op);
 
-                switch (op)
-                {
-                case 1:
-                    Write_To_txt(f, a, b, step);
-                    break;
+                switch (op) {
+                    case 1:
+                        Write_To_txt(f, a, b, step);
+                        break;
 
-                case 2:
-                    Compute_File(f);
-                    break;
+                    case 2:
+                        Compute_File(f);
+                        break;
 
-                case 3:
-                    system("PyPlot.exe");
-                    break;
+                    case 3:
+                        system("PyPlot.exe");
+                        break;
 
-                case 4:
-                    printf("Максимум при x = %.6f\n", Golden(f, a, b));
-                    break;
-                
-                case 5:
-                    Describe_Func(f, a, b, step);
-                    break;
+                    case 4:
+                        printf("Максимум при x = %.6f\n", Golden(f, a, b));
+                        break;
+                    
+                    case 5:
+                        Describe_Func(f, a, b, step);
+                        break;
 
-                case 6:
-                    Make_Points(f, a, b, step);
-                    break;
-                
-                case 7:
-                    Make_Matrix(f, a, b, step);
-                    break;
+                    case 6:
+                        Make_Points(f, a, b, step);
+                        break;
+                    
+                    case 7:
+                        Make_Matrix(f, a, b, step);
+                        break;
 
-                case 8:
-                    Range(f, a, b, step);
-                    break;
-                
-                default:
-                    printf("Неверный номер операции!");
-                    break;
+                    case 8:
+                        Range(f, a, b, step);
+                        break;
+                    
+                    default:
+                        printf("Неверный номер операции!");
+                        break;
                 }
             default:
                 printf("Неверный пункт меню!");
@@ -346,5 +332,44 @@ int main(void) {
 
     printf("Программа завершена.\n");
     return 0;
+}
 
+// Исправленные функции
+void Print_Table(FuncPtr f, double a, double b, double step) {
+    printf("\n      x\t\tf(x)\n");
+    printf("------------------------\n");
+    for (double x = a; x <= b; x += step) {
+        printf("%10.3f\t%14.6e\n", x, f(x));
+    }
+}
+
+void Write_To_txt(FuncPtr f, double a, double b, double step) {
+    FILE *fp = fopen("dat.txt", "w");
+
+    if (!fp) {
+        printf("Ошибка открытия!");
+        return;
+    }
+
+    for (double x = a; x <= b; x += step) {
+        fprintf(fp, "%.6f\t%.6e\n", x, f(x));
+    }
+    fclose(fp);
+    printf("Успешно записано!");
+}
+
+void Compute_File(FuncPtr f) {
+    FILE *fp = fopen("dat.txt", "r");
+
+    if (!fp) {
+        printf("Файл не найден.");
+        return;
+    }
+
+    double x, y;
+
+    while (fscanf(fp, "%lf\t%lf", &x, &y) == 2) {
+        printf("f(%.3f) = %.6e\n", x, y);
+    }
+    fclose(fp);
 }
