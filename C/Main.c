@@ -185,7 +185,7 @@ void Write_To_txt(FuncPtr f, double a, double b, double step) {
     printf("Успешно записано!\n");
 }
 
-void Compute_File(FuncPtr f) {
+void Compute_File() {
     FILE *fp = fopen("dat.txt", "r");
     
     if (!fp) {
@@ -199,6 +199,48 @@ void Compute_File(FuncPtr f) {
         printf("f(%.3f) = %.6e\n", x, y);
     }
     fclose(fp);
+}
+
+void Plot_C(FuncPtr f, double a, double b) {
+    int SCREENW = 60, SCREENH = 40;
+    char screen[SCREENW][SCREENH];
+    double x, y[SCREENW];
+    double ymin = 0, ymax = 0;
+    double hx, hy;
+    int i, j;
+    int xz, yz;
+    
+    hx = (b - a) / (SCREENW - 1);
+    
+    for(i = 0, x = a; i < SCREENW; ++i, x += hx) {
+        y[i] = f(x);
+        if(y[i] < ymin) ymin = y[i];
+        if(y[i] > ymax) ymax = y[i];
+    }
+    
+    hy = (ymax - ymin) / (SCREENH - 1);
+    yz = (int)floor(ymax / hy + 0.5);
+    xz = (int)floor((0. - a) / hx + 0.5);
+    
+    for(j = 0; j < SCREENH; ++j)
+        for(i = 0; i < SCREENW; ++i) {
+            if(j == yz && i == xz) screen[i][j] = '+';
+            else if (j == yz) screen[i][j] = '-';
+            else if (i == xz) screen[i][j] = '|';
+            else screen[i][j] = ' ';
+        }
+    
+    for(i = 0; i < SCREENW; ++i) {
+        j = (int)floor((ymax - y[i]) / hy + 0.5);
+        if(j >= 0 && j < SCREENH) {
+            screen[i][j] = '*';
+        }
+    }
+    
+    for(j = 0; j < SCREENH; ++j) {
+        for(i = 0; i < SCREENW; ++i) putchar(screen[i][j]);
+        putchar('\n');
+    }
 }
 
 
@@ -216,6 +258,7 @@ FuncPtr Select_Func() {
         default: return NULL;
     }
 }
+
 
 //-----------------------------------------------------------------------------
 
@@ -257,7 +300,7 @@ int main(void) {
             
             case 3:
                 int op;
-                printf("Выберите операцию:\n1 - Запись в файл dat.txt\n2 - Расчет из файла dat.txt\n3 - Построение графика (Python)\n4 - Поиск максимума\n5 - Анализ функции\n6 - Массив точек\n7 - Двумерный массив аргументов и значений\n8 - Размах функции\n> ");
+                printf("Выберите операцию:\n1 - Запись в файл dat.txt\n2 - Расчет из файла dat.txt\n3 - Построение графика (Python | C)\n4 - Поиск максимума\n5 - Анализ функции\n6 - Массив точек\n7 - Двумерный массив аргументов и значений\n8 - Размах функции\n> ");
                 scanf("%d", &op);
                 
                 switch (op) {
@@ -270,7 +313,17 @@ int main(void) {
                         break;
                     
                     case 3:
-                        system("\"PyPlot.exe\"");
+                        short int graph_sel;
+                        printf("Выберите вариант построения графика:\n1 - Использовать язык Си\n2 - Использовать Python\n> "); scanf("%hd", &graph_sel);
+                        
+                        if (graph_sel == 1) {
+                            Plot_C(f, a, b);
+                            } else if (graph_sel == 2) {
+                                system("\"PyPlot.exe\"");
+                                } else {
+                                    puts("Не был выбран ни один возможный вариант!");
+                                    }
+                        
                         break;
                     
                     case 4:
