@@ -40,35 +40,29 @@ double f3(double x) {
     return sum;
 }
 
-FuncPtr Select_Function() {
-    
-    int ch;
-
-    printf("\nВыберите функцию:\n");
-    printf("1 - f1(x)\n2 - f2(x)\n3 - f3(x)\n> ");
-    scanf("%d", &ch);
-    
-    switch (ch) {
-        case 1: return f1;
-        case 2: return f2;
-        case 3: return f3;
-        default: return NULL;
-    }
-
-}
-
 int main(void) {
-
-    FuncPtr f = Select_Function();
-
 
     while (1)
     {
 
-        short int choose;
+        short int choose, chf;
+        
+        printf("\nВыберите функцию:\n");
+        printf("1 - f1(x)\n2 - f2(x)\n3 - f3(x)\n> ");
+        scanf("%d", &chf);
 
-        printf("\n МЕНЮ \n")
-        printf("1 - Найти значение F(x) при заданном значении x\n2 - Вычислить значения F(x) на интервале (Xa -> Xb с заданным шагом)\n3 - Построить график F(x)\n");
+        if (chf == 1) {
+            FuncPtr f = f1;
+            } else if (chf == 2) {
+                FuncPtr f = f2;
+                } else if (chf == 3) {
+                    FuncPtr f = f3;
+                    } else {
+                        FuncPtr f = NULL;
+                        }
+
+        printf("\n МЕНЮ \n");
+        printf("1 - Найти значение F(x) при заданном значении x\n2 - Вычислить значения F(x) на интервале\n\n");
     }
     
 
